@@ -1,0 +1,92 @@
+@RestResource(urlMapping='/Thiru_Salesforce_Alexa_WS/*')
+global with sharing class ThiruSalesforceAlexaWS{
+
+    @HttpPost
+    global static string AlexaWSPost(String contnumb,string operation) {
+        switch on operation {
+            when 'Contract_Owner'{        
+                return contractOwner(contnumb);
+            }
+            when 'Contract_Status'{        
+                return contractStatus(contnumb);
+            }  
+            when 'Contract_Start_Date'{        
+                return contractStart_Date(contnumb);
+            }
+            when 'Salesforce_deals_won'{        
+                return Salesforce_deals_won();
+            }     
+            when 'Execute_contract'{        
+                return Execute_contract(contnumb);
+            } 
+            when else {       // default block, optional
+                return 'Issue with Alexa Sales force';
+            }
+            
+        }
+        
+    }    
+    
+    
+    private static string contractOwner(String contnumb) {
+
+        List <Contract> c = [select Owner.name from contract where ContractNumber =: contnumb limit 1];
+        if (c.size()>0){
+            return 'Owner of Contract '+ contnumb + 'is '+ c[0].Owner.name ;
+        }
+        else{
+            return 'Contract ' + contnumb + 'Not Found';
+        }
+
+    }
+    private static string contractStatus(String contnumb) {
+
+        List <Contract> c = [select Status from contract where ContractNumber =: contnumb limit 1];
+        if (c.size()>0){
+            return 'Contract ' + contnumb + ' is in '+ c[0].Status + ' State';
+        }
+        else{
+            return 'Contract ' + contnumb + 'Not Found';
+        }
+
+    }
+    private static string contractStart_Date(String contnumb) {
+
+        List <Contract> c = [select StartDate from contract where ContractNumber =: contnumb limit 1];
+        if (c.size()>0){
+            return 'Contract ' + contnumb + 'starts on ' + string.valueof(c[0].StartDate);
+        }
+        else{
+            return 'Contract ' + contnumb + 'Not Found';
+        }
+
+    }
+    private static string Salesforce_deals_won() {
+
+         decimal TotalWorth=0;
+         AggregateResult[] OpptyWon = [SELECT sum(Amount) Sum_Amount FROM Opportunity where probability = 100];
+         for (AggregateResult ar : OpptyWon){  
+             TotalWorth= TotalWorth+ (decimal) ar.get('Sum_Amount');
+         }
+         return  'Deals won this year is worth dollar ' + String.valueof(TotalWorth/1000); 
+
+    }
+    private static string execute_contract(String contnumb) {
+
+        List <Contract> c = [select status from contract where ContractNumber =: contnumb limit 1];
+        if (c.size()>0){
+            c[0].Status='Activated';
+            update c[0];
+            return 'Contract Number'+ contnumb + 'is now Activated' ;
+        }
+        else{
+            return 'Contract ' + contnumb + 'Not Found';
+        }
+
+    }
+    
+    
+
+    
+    
+}
