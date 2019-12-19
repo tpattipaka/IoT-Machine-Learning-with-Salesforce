@@ -1,0 +1,423 @@
+ 
+"""
+This is a Python template for Alexa to get you building skills (conversations) quickly.
+"""
+
+from __future__ import print_function
+import random
+import http.client
+import json
+
+conn = http.client.HTTPSConnection("prani2019-dev-ed.my.salesforce.com") 
+
+# --------------- Helpers that build all of the responses ----------------------
+
+def build_thiruforce_response(title, output, reprompt_text, should_end_session):
+    return {
+        'outputSpeech': {
+            'type': 'PlainText',
+            'text': output
+        },
+        'card': {
+            'type': 'Simple',
+            'title': "Sessionthiruforce - " + title,
+            'content': "Sessionthiruforce - " + output
+        },
+        'reprompt': {
+            'outputSpeech': {
+                'type': 'PlainText',
+                'text': reprompt_text
+            }
+        },
+        'shouldEndSession': should_end_session
+    }
+
+def build_response(session_attributes, thiruforce_response):
+    return {
+        'version': '1.0',
+        'sessionAttributes': session_attributes,
+        'response': thiruforce_response
+    }
+
+
+     
+
+def get_Salesforce_Contract_Owner(contnumber):
+    
+   
+    session_attributes = {}
+    card_title = "salesforce"
+  
+    
+    
+    print('Connecting to Salesforce.....')
+    headers = {
+    'cache-control': "no-cache",
+    'postman-token': "c1d7387c-e08d-4601-a9e7-5235ce2f6015",
+    'content-type': "application/x-www-form-urlencoded"
+    }
+
+    conn.request("POST",  "/services/oauth2/token?client_id=3MVG95G8WxiwV5Psdou27IM7dY6l2ocZWm5idY_ZD1uFbyKO4lPObA2bmTlbgStyNhtwcSMQJFEZAOVSfaiTr&client_secret=507DBB6CA0F6A34827D62951359E1DBD0A3356FBFA4AF3986C550C2BA97EB1B1&grant_type=password&username=thirupathi@iot.com&password=Xyz@786324564nWwxE6dzhqgT6p35grvbczV", headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+    TokenResponse = json.loads(data)
+
+            
+    #print( TokenResponse  )       
+    Token = TokenResponse['access_token']
+    
+    headers = {
+    'content-type': "application/json",
+    'authorization': "Bearer " + Token ,
+    'cache-control': "no-cache",
+    'postman-token': "acde6fad-0ef5-434b-89ee-2ed7d9102bfa"
+    }
+    payload = "{\"contnumb\" : \""+contnumber+"\",\"operation\" : \"Contract_Owner\"}"
+            
+
+    print('Payload Sent to Salesforce ... ' +payload)
+    conn.request("POST", "//services/apexrest/Thiru_Salesforce_Alexa_WS", payload, headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    print('Response Received From Salesforce webservice...' + data.decode("utf-8"))
+    
+    
+    speech_output = data.decode("utf-8")
+    reprompt_text = data.decode("utf-8")
+    should_end_session = False
+    return build_response(session_attributes, build_thiruforce_response(
+        card_title, speech_output, reprompt_text, should_end_session))    
+
+def get_Contract_Start_Date(contnumber):
+    
+   
+    session_attributes = {}
+    card_title = "salesforce"
+  
+    
+    
+    print('Connecting to Salesforce.....')
+    headers = {
+    'cache-control': "no-cache",
+    'postman-token': "c1d7387c-e08d-4601-a9e7-5235ce2f6015",
+    'content-type': "application/x-www-form-urlencoded"
+    }
+
+    conn.request("POST",  "/services/oauth2/token?client_id=3MVG95G8WxiwV5Psdou27IM7dY6l2ocZWm5idY_ZD1uFbyKO4lPObA2bmTlbgStyNhtwcSMQJFEZAOVSfaiTr&client_secret=507DBB6CA0F6A34827D62951359E1DBD0A3356FBFA4AF3986C550C2BA97EB1B1&grant_type=password&username=thirupathi@iot.com&password=Xyz@786324564nWwxE6dzhqgT6p35grvbczV", headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+    TokenResponse = json.loads(data)
+
+            
+    #print( TokenResponse  )       
+    Token = TokenResponse['access_token']
+    
+    headers = {
+    'content-type': "application/json",
+    'authorization': "Bearer " + Token ,
+    'cache-control': "no-cache",
+    'postman-token': "acde6fad-0ef5-434b-89ee-2ed7d9102bfa"
+    }
+    payload = "{\"contnumb\" : \""+contnumber+"\",\"operation\" : \"Contract_Start_Date\"}"
+            
+
+    print('Payload Sent to Salesforce ... ' +payload)
+    conn.request("POST", "//services/apexrest/Thiru_Salesforce_Alexa_WS", payload, headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    print('Response Received From Salesforce webservice...' + data.decode("utf-8"))
+    
+    
+    speech_output = data.decode("utf-8")
+    reprompt_text = data.decode("utf-8")
+    should_end_session = False
+    return build_response(session_attributes, build_thiruforce_response(
+        card_title, speech_output, reprompt_text, should_end_session))            
+   
+def get_Contract_Status(contnumber):
+    
+   
+    session_attributes = {}
+    card_title = "salesforce"
+  
+    
+    
+    print('Connecting to Salesforce to get the status.....')
+    print(contnumber)
+    headers = {
+    'cache-control': "no-cache",
+    'postman-token': "c1d7387c-e08d-4601-a9e7-5235ce2f6015",
+    'content-type': "application/x-www-form-urlencoded"
+    }
+
+    conn.request("POST",  "/services/oauth2/token?client_id=3MVG95G8WxiwV5Psdou27IM7dY6l2ocZWm5idY_ZD1uFbyKO4lPObA2bmTlbgStyNhtwcSMQJFEZAOVSfaiTr&client_secret=507DBB6CA0F6A34827D62951359E1DBD0A3356FBFA4AF3986C550C2BA97EB1B1&grant_type=password&username=thirupathi@iot.com&password=Xyz@786324564nWwxE6dzhqgT6p35grvbczV", headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+    TokenResponse = json.loads(data)
+
+    print( 'status response'  )         
+    print( TokenResponse  )       
+    Token = TokenResponse['access_token']
+    print( 'tttttokkkkkkennnnn'  )         
+    print( Token  ) 
+    
+    headers = {
+    'content-type': "application/json",
+    'authorization': "Bearer " + Token ,
+    'cache-control': "no-cache",
+    'postman-token': "acde6fad-0ef5-434b-89ee-2ed7d9102bfa"
+    }
+    payload = "{\"contnumb\" : \""+contnumber+"\",\"operation\" : \"Contract_Status\"}"
+            
+
+    print('Payload Sent to Salesforce for getting status... ' +payload)
+    print( 'tttttokkkkkkennnnn222'  )         
+    print( Token  ) 
+    print( headers  ) 
+    conn.request("POST", "//services/apexrest/Thiru_Salesforce_Alexa_WS", payload, headers)
+
+    res = conn.getresponse()
+    data = res.read()
+    print('final status responssss')
+    print(res)
+
+    print('Response Received From Salesforce webservice for status...' + data.decode("utf-8"))
+    
+    
+    speech_output = data.decode("utf-8")
+    reprompt_text = data.decode("utf-8")
+    should_end_session = False
+    return build_response(session_attributes, build_thiruforce_response(
+        card_title, speech_output, reprompt_text, should_end_session)) 
+        
+def get_Execute_contract(contnumber):
+    
+   
+    session_attributes = {}
+    card_title = "salesforce"
+  
+    
+    
+    print('Connecting to Salesforce.....')
+    headers = {
+    'cache-control': "no-cache",
+    'postman-token': "c1d7387c-e08d-4601-a9e7-5235ce2f6015",
+    'content-type': "application/x-www-form-urlencoded"
+    }
+
+    conn.request("POST",  "/services/oauth2/token?client_id=3MVG95G8WxiwV5Psdou27IM7dY6l2ocZWm5idY_ZD1uFbyKO4lPObA2bmTlbgStyNhtwcSMQJFEZAOVSfaiTr&client_secret=507DBB6CA0F6A34827D62951359E1DBD0A3356FBFA4AF3986C550C2BA97EB1B1&grant_type=password&username=thirupathi@iot.com&password=Xyz@786324564nWwxE6dzhqgT6p35grvbczV", headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+    TokenResponse = json.loads(data)
+
+            
+    #print( TokenResponse  )       
+    Token = TokenResponse['access_token']
+    
+    headers = {
+    'content-type': "application/json",
+    'authorization': "Bearer " + Token ,
+    'cache-control': "no-cache",
+    'postman-token': "acde6fad-0ef5-434b-89ee-2ed7d9102bfa"
+    }
+    payload = "{\"contnumb\" : \""+contnumber+"\",\"operation\" : \"Execute_contract\"}"
+            
+
+    print('Payload Sent to Salesforce ... ' +payload)
+    conn.request("POST", "//services/apexrest/Thiru_Salesforce_Alexa_WS", payload, headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    print('Response Received From Salesforce webservice...' + data.decode("utf-8"))
+    
+    
+    speech_output = data.decode("utf-8")
+    reprompt_text = data.decode("utf-8")
+    should_end_session = False
+    return build_response(session_attributes, build_thiruforce_response(
+        card_title, speech_output, reprompt_text, should_end_session))
+        
+def get_Salesforce_deals_won():
+    
+   
+    session_attributes = {}
+    card_title = "salesforce"
+  
+    
+    
+    print('Connecting to Salesforce.....')
+    headers = {
+    'cache-control': "no-cache",
+    'postman-token': "c1d7387c-e08d-4601-a9e7-5235ce2f6015",
+    'content-type': "application/x-www-form-urlencoded"
+    }
+
+    conn.request("POST",  "/services/oauth2/token?client_id=3MVG95G8WxiwV5Psdou27IM7dY6l2ocZWm5idY_ZD1uFbyKO4lPObA2bmTlbgStyNhtwcSMQJFEZAOVSfaiTr&client_secret=507DBB6CA0F6A34827D62951359E1DBD0A3356FBFA4AF3986C550C2BA97EB1B1&grant_type=password&username=thirupathi@iot.com&password=Xyz@786324564nWwxE6dzhqgT6p35grvbczV", headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+    TokenResponse = json.loads(data)
+
+            
+    #print( TokenResponse  )       
+    Token = TokenResponse['access_token']
+    
+    headers = {
+    'content-type': "application/json",
+    'authorization': "Bearer " + Token ,
+    'cache-control': "no-cache",
+    'postman-token': "acde6fad-0ef5-434b-89ee-2ed7d9102bfa"
+    }
+    contnumber =""
+    payload = "{\"contnumb\" : \""+contnumber+"\",\"operation\" : \"Salesforce_deals_won\"}"
+            
+
+    print('Payload Sent to Salesforce ... ' +payload)
+    conn.request("POST", "//services/apexrest/Thiru_Salesforce_Alexa_WS", payload, headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    print('Response Received From Salesforce webservice...' + data.decode("utf-8"))
+    
+    
+    speech_output = data.decode("utf-8")
+    reprompt_text = data.decode("utf-8")
+    should_end_session = False
+    return build_response(session_attributes, build_thiruforce_response(
+        card_title, speech_output, reprompt_text, should_end_session)) 
+        
+        
+def get_welcome_response():
+    """ If we wanted to initialize the session to have some attributes we could
+    add those here
+    """
+    session_attributes = {}
+    card_title = "Welcome"
+    speech_output = "Welcome to Thiru Force application powered by BIIT OY, Finland  - how do I help you ? "
+    # If the user either does not reply to the welcome message or says something
+    # that is not understood, they will be prompted again with this text.
+    reprompt_text = "I don't know if you heard me, Please be attentive otherwise I will complaint to Ikla Puustinen and Raimo Jalonen, Kiitos!!" 
+    should_end_session = False
+    return build_response(session_attributes, build_thiruforce_response(
+        card_title, speech_output, reprompt_text, should_end_session))
+
+
+def handle_session_end_request():
+    card_title = "Session Ended"
+    speech_output = "Thank you for trying the BIIT TOOLS Skills Kit . " \
+                    "Have a nice day! "
+    # Setting this to true ends the session and exits the skill.
+    should_end_session = True
+    return build_response({}, build_thiruforce_response(
+        card_title, speech_output, None, should_end_session))
+
+# --------------- Events ------------------
+
+def on_session_started(session_started_request, session):
+    """ Called when the session starts.
+        One possible use of this function is to initialize specific 
+        variables from a previous state stored in an external database
+    """
+    # Add additional code here as needed
+    pass
+
+    
+
+def on_launch(launch_request, session):
+    """ Called when the user launches the skill without specifying what they
+    want
+    """
+    # Dispatch to your skill's launch message
+    return get_welcome_response()
+
+
+def on_intent(intent_request, session):
+    """ Called when the user specifies an intent for this skill """
+    print('required function is calling that is intent on function');
+    intent = intent_request['intent']
+    intent_name = intent_request['intent']['name']
+    
+    print('firstly print intent_name');
+    print(intent_name);
+    
+    #if intent_name != "Salesforce_deals_won" or intent_name != "AMAZON.HelpIntent" or intent_name != "AMAZON.CancelIntent" or intent_name != "AMAZON.StopIntent":
+        #contractnumber = intent_request['intent']['slots']['Contract_Number']['value']
+    
+    
+    print('print alexa input contractnumber');
+    #print(contractnumber);
+    
+
+    # Dispatch to your skill's intent handlers
+    
+    if intent_name == "Contract_Owner":
+        return get_Salesforce_Contract_Owner(intent_request['intent']['slots']['Contract_Number']['value'])
+    elif intent_name == "Contract_Start_Date":
+        return get_Contract_Start_Date(intent_request['intent']['slots']['Contract_Number']['value'])
+    elif intent_name == "Contract_Status":
+        return  get_Contract_Status(intent_request['intent']['slots']['Contract_Number']['value'])
+    elif intent_name == "Salesforce_deals_won":
+        return get_Salesforce_deals_won()      
+    elif intent_name == "Execute_Contract":
+        return get_Execute_contract(intent_request['intent']['slots']['Contract_Number']['value']) 
+    elif intent_name == "AMAZON.HelpIntent":
+        return get_welcome_response()
+    elif intent_name == "Help":
+        return get_welcome_response()
+    elif intent_name == "cancel":
+        return handle_session_end_request()
+    elif intent_name == "stop":
+        return handle_session_end_request()
+    elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
+        return handle_session_end_request()
+    else:
+        return handle_session_end_request()
+        #raise ValueError("Invalid intent")
+
+
+def on_session_ended(session_ended_request, session):
+    """ Called when the user ends the session.
+    Is not called when the skill returns should_end_session=true
+    """
+    print("on_session_ended requestId=" + session_ended_request['requestId'] +
+          ", sessionId=" + session['sessionId'])
+    # add cleanup logic here
+
+
+# --------------- Main handler ------------------
+
+def lambda_handler(event, context):
+    """ Route the incoming request based on type (LaunchRequest, IntentRequest,
+    etc.) The JSON body of the request is provided in the event parameter.
+    """
+    print("Incoming request...!!!")
+
+    """
+    Uncomment this if statement and populate with your skill's application ID to
+    prevent someone else from configuring a skill that sends requests to this
+    function.
+    """
+    # if (event['session']['application']['applicationId'] !=
+    #         "amzn1.echo-sdk-ams.app.[unique-value-here]"):
+    #     raise ValueError("Invalid Application ID")
+
+    if event['session']['new']:
+        on_session_started({'requestId': event['request']['requestId']},
+                           event['session'])
+
+    if event['request']['type'] == "LaunchRequest":
+        return on_launch(event['request'], event['session'])
+    elif event['request']['type'] == "IntentRequest":
+        return on_intent(event['request'], event['session'])
+    elif event['request']['type'] == "SessionEndedRequest":
+        return on_session_ended(event['request'], event['session'])
