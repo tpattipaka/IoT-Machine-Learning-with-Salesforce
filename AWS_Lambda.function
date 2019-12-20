@@ -371,12 +371,7 @@ def on_intent(intent_request, session):
     elif intent_name == "Execute_Contract":
         return get_Execute_contract(intent_request['intent']['slots']['Contract_Number']['value']) 
     elif intent_name == "AMAZON.HelpIntent":
-        return get_welcome_response()
-    elif intent_name == "Help":
-        return get_welcome_response()
-    elif intent_name == "cancel":
-        return handle_session_end_request()
-    elif intent_name == "stop":
+        return get_welcome_response() 
         return handle_session_end_request()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
         return handle_session_end_request()
